@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 
-type OctokitOptions = {
+export type OctokitOptions = {
   octokit: Octokit;
   org: string;
   repo: string;
