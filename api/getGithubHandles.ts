@@ -16,6 +16,7 @@ export async function getGitHubHandles(options: OctokitOptions) {
       class: item.class,
       firstname: item.firstname,
       lastname: item.lastname,
+      email: item.email,
     };
   });
   return jsonContent;

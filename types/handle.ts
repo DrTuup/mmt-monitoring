@@ -3,4 +3,5 @@ type GithubHandle = {
   class: string;
   firstname: string;
   lastname: string;
+  email: string;
 };

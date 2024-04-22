@@ -18,7 +18,7 @@ export async function getAssignments(options: OctokitOptions) {
 
       arrAssignments.push({
         name: repo.name.replace("-startercode", ""),
-        order: releases[releases.length - 1].tag_name.toLowerCase(),
+        order: releases[releases.length - 1]?.tag_name.toLowerCase(),
       });
     } catch (error) {
       console.log(error);

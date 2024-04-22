@@ -7,61 +7,62 @@ import { getGitHubHandles } from "@/api/getGithubHandles";
 import Title from "@/components/title";
 import options from "@/api/options";
 import { getAssignments } from "@/api/getAssignments";
+import { getAssignmentResults } from "@/api/getAssignmentResults";
+
+function getStatusColor(status: string) {
+  switch (status) {
+    case "merged":
+      return "green";
+    case "submitted":
+      return "orange";
+    case "accepted":
+      return "yellow";
+    default:
+      return "gray";
+  }
+}
 
 export default function Home() {
-  const [githubHandles, setGitHubHandles] = useState([]);
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
-  useEffect(() => {
-    getGitHubHandles(options).then((handles) => {
-      setGitHubHandles(handles);
-    });
+  const [assignmentResults, setAssignmentResults] = useState<
+    AssignmentResult[]
+  >([]);
+  const [isLoadingAssignmentResults, setIsLoadingAssignmentResults] =
+    useState(true);
 
-    getAssignments(options).then((arrAssignments) => {
-      setAssignments(arrAssignments);
+  useEffect(() => {
+    getAssignmentResults(options).then((results) => {
+      setAssignmentResults(results);
+      setIsLoadingAssignmentResults(false);
     });
   }, []);
 
   return (
     <>
-      <Title text="GitHub Handles"></Title>
-      <table>
-        <thead>
-          <tr>
-            <th>GitHub Handle</th>
-            <th>Class</th>
-            <th>First name</th>
-            <th>Last name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {githubHandles.map((handle: GithubHandle, index) => (
-            <tr key={index}>
-              <td>{handle.handle}</td>
-              <td>{handle.class}</td>
-              <td>{handle.firstname}</td>
-              <td>{handle.lastname}</td>
+      <Title text="Assignment Results"></Title>
+      {isLoadingAssignmentResults ? (
+        <p>Loading...</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Assignment</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <br />
-      <Title text="GitHub Assignments"></Title>
-      <table>
-        <thead>
-          <tr>
-            <th>Assignment</th>
-            <th>Order</th>
-          </tr>
-        </thead>
-        <tbody>
-          {assignments.map((assignment: Assignment, index) => (
-            <tr key={index}>
-              <td>{assignment.name}</td>
-              <td>{assignment.order}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {assignmentResults.map((result: AssignmentResult, index) => (
+              <tr key={index}>
+                <td>{result.student}</td>
+                <td>{result.assignment}</td>
+                <td style={{ backgroundColor: getStatusColor(result.status) }}>
+                  {result.status}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 }
