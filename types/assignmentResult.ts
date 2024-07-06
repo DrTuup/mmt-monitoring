@@ -1,5 +1,5 @@
 type AssignmentResult = {
-  student: string;
-  assignment: string;
+  githubHandle: GithubHandle;
+  assignment: Assignment;
   status: string;
 };

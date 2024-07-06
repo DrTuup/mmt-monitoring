@@ -9,8 +9,8 @@ export async function getGitHubHandles(options: OctokitOptions) {
 
   // @ts-ignore
   let content = Buffer.from(result.data.content, "base64").toString("utf-8");
-  let jsonContent = JSON.parse(content);
-  jsonContent = jsonContent.map((item: GithubHandle) => {
+  let handles = JSON.parse(content);
+  handles = handles.map((item: GithubHandle) => {
     return {
       handle: item.handle,
       class: item.class,
@@ -19,5 +19,5 @@ export async function getGitHubHandles(options: OctokitOptions) {
       email: item.email,
     };
   });
-  return jsonContent;
+  return handles;
 }

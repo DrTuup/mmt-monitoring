@@ -1,68 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getGitHubHandles } from "@/api/getGithubHandles";
-
-// components
-import Title from "@/components/title";
-import options from "@/api/options";
-import { getAssignments } from "@/api/getAssignments";
 import { getAssignmentResults } from "@/api/getAssignmentResults";
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case "merged":
-      return "green";
-    case "submitted":
-      return "orange";
-    case "accepted":
-      return "yellow";
-    default:
-      return "gray";
-  }
-}
+import { getAssignments } from "@/api/getAssignments";
+import { getGitHubHandles } from "@/api/getGithubHandles";
+import options from "@/api/options";
+import Title from "@/components/title";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [assignmentResults, setAssignmentResults] = useState<
-    AssignmentResult[]
-  >([]);
-  const [isLoadingAssignmentResults, setIsLoadingAssignmentResults] =
-    useState(true);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [githubHandles, setGithubHandles] = useState<GithubHandle[]>([]);
 
   useEffect(() => {
-    getAssignmentResults(options).then((results) => {
-      setAssignmentResults(results);
-      setIsLoadingAssignmentResults(false);
+    getAssignments(options).then((assignments: Assignment[]) => {
+      setAssignments(assignments);
+    });
+
+    getGitHubHandles(options).then((githubHandles: GithubHandle[]) => {
+      setGithubHandles(githubHandles);
+    });
+
+    getAssignmentResults(options).then((results: AssignmentResult[]) => {
+      console.log(results);
     });
   }, []);
 
   return (
     <>
-      <Title text="Assignment Results"></Title>
-      {isLoadingAssignmentResults ? (
-        <p>Loading...</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Assignment</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assignmentResults.map((result: AssignmentResult, index) => (
-              <tr key={index}>
-                <td>{result.student}</td>
-                <td>{result.assignment}</td>
-                <td style={{ backgroundColor: getStatusColor(result.status) }}>
-                  {result.status}
-                </td>
-              </tr>
+      <Title text="Home" />
+      <table>
+        <thead>
+          <tr>
+            <th className="border-none"></th>
+            {assignments.map((assignment) => (
+              <th
+                key={assignment.name}
+                className="text-vertical rotate-180 border-none"
+              >
+                {assignment.order + " - " + assignment.name}
+              </th>
             ))}
-          </tbody>
-        </table>
-      )}
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </>
   );
 }

@@ -1,12 +1,20 @@
+import { Repo } from "@/types/repo";
 import { OctokitOptions } from "./options";
 
+let repos: Repo[];
+
 export async function getAllRepos(options: OctokitOptions) {
-  let org_repos = await options.octokit.paginate(
-    "GET /orgs/{org}/repos", // Fix the route parameter
-    { org: options.org, per_page: 100 }, // Pass the org parameter
+  if (repos) {
+    return repos;
+  }
+
+  let org_repos: Repo[] = await options.octokit.paginate(
+    "GET /orgs/{org}/repos",
+    { org: options.org, per_page: 100 },
     (response, done) => {
-      return response.data;
+      return response.data as Repo[];
     }
   );
+  repos = org_repos;
   return org_repos;
 }
